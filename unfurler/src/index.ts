@@ -118,16 +118,16 @@ class Server {
     this.app.set('view engine', 'ejs');
 
     if (puppeteerEnabled) {
-      this.app.get('/unfurl/render*', async (req, res) => { return this.renderPreview(req, res) })
-      this.app.get('/render*', async (req, res) => { return this.renderPreview(req, res) })
+      this.app.get(/^\/unfurl\/render(.*)$/, async (req, res) => { return this.renderPreview(req, res) })
+      this.app.get(/^\/render(.*)$/, async (req, res) => { return this.renderPreview(req, res) })
     } else {
-      this.app.get('/unfurl/render*', async (req, res) => { return this.renderDisabled(req, res) })
-      this.app.get('/render*', async (req, res) => { return this.renderDisabled(req, res) })
+      this.app.get(/^\/unfurl\/render(.*)$/, async (req, res) => { return this.renderDisabled(req, res) })
+      this.app.get(/^\/render(.*)$/, async (req, res) => { return this.renderDisabled(req, res) })
     }
-    this.app.get('/unfurl*', (req, res) => { return this.renderHTML(req, res, true) })
-    this.app.get('/slurp*', (req, res) => { return this.renderHTML(req, res, false) })
-    this.app.get('/sip*', (req, res) => { return this.renderSip(req, res) })
-    this.app.get('*', (req, res) => { return this.renderHTML(req, res, false) })
+    this.app.get(/^\/unfurl(.*)$/, (req, res) => { return this.renderHTML(req, res, true) })
+    this.app.get(/^\/slurp(.*)$/, (req, res) => { return this.renderHTML(req, res, false) })
+    this.app.get(/^\/sip(.*)$/, (req, res) => { return this.renderSip(req, res) })
+    this.app.get(/^(.*)$/, (req, res) => { return this.renderHTML(req, res, false) })
   }
 
   async clusterTask({ page, data: { url, path, action, reqUrl } }) {
