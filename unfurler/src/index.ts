@@ -1,5 +1,5 @@
 import express from "express";
-import { Application, Request, Response, NextFunction } from 'express';
+import { Application, Request, Response } from 'express';
 import * as http from 'http';
 import * as https from 'https';
 import config from './config';
@@ -8,7 +8,6 @@ import ReusablePage from './concurrency/ReusablePage';
 import ReusableSSRPage from './concurrency/ReusableSSRPage';
 import { parseLanguageUrl } from './language/lang';
 import { matchRoute, networks } from './routes';
-import nodejsPath from 'path';
 import logger from './logger';
 import { TimeoutError } from "puppeteer";
 const puppeteerConfig = require('../puppeteer.config.json');
@@ -255,9 +254,9 @@ class Server {
       }
 
       if (!img) {
-        // send local fallback image file
+        // redirect to fallback image
         res.set('Cache-control', 'no-cache');
-        res.sendFile(nodejsPath.join(__dirname, matchedRoute.fallbackImg));
+        res.redirect(302, this.canonicalHost + matchedRoute.fallbackImg);
       } else {
         res.contentType('image/png');
         res.send(img);
